@@ -1,0 +1,197 @@
+<%- include('partials/adminheadermain') %>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-3 col-lg-2 sidebar p-3">
+            <h3 class="mb-4">Admin Dashboard</h3>
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link active" href="#" data-section="students">Students</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" data-section="teachers">Teachers</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" data-section="courses">Courses</a>
+                </li>
+            </ul>
+        </div>
+        <div class="col-md-9 col-lg-10 content">
+            <% if (typeof error !== 'undefined' && error) { %>
+                <div class="alert alert-danger"><%= error %></div>
+            <% } %>
+            <div class="form-section active" id="students-section">
+                <!-- Student section remains unchanged -->
+                <h2>Student Management</h2>
+                <div class="mb-4">
+                    <h4>Current Students</h4>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% students.forEach(student => { %>
+                            <tr>
+                                <td><%= student.id %></td>
+                                <td><%= student.fname %> <%= student.lname %></td>
+                                <td><%= student.email %></td>
+                                <td>
+                                    <form action="/admin/remove-student/<%= student.id %>" method="post" style="display:inline;">
+                                        <button type="submit" class="btn btn-danger btn-sm">Remove</button>
+                                    </form>
+                                </td>
+                            </tr>
+                            <% }); %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="form-section" id="teachers-section">
+                <h2>Teacher Management</h2>
+                <div class="mb-4">
+                    <h4>Add New Teacher</h4>
+                    <form action="/admin/add-teacher" method="post" class="mb-4">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="teacherId" class="form-label">Teacher ID</label>
+                                <input type="text" class="form-control" id="teacherId" name="teacherId" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="staffId" class="form-label">Staff Login ID</label>
+                                <input type="text" class="form-control" id="staffId" name="staffId" required>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="email" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="email" name="email" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="department" class="form-label">Department</label>
+                                <input type="text" class="form-control" id="department" name="department" required>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="fname" class="form-label">First Name</label>
+                                <input type="text" class="form-control" id="fname" name="fname" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="lname" class="form-label">Last Name</label>
+                                <input type="text" class="form-control" id="lname" name="lname" required>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Add Teacher</button>
+                    </form>
+                </div>
+                <div class="mb-4">
+                    <h4>Current Teachers</h4>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Teacher ID</th>
+                                <th>Staff ID</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Department</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% teachers.forEach(teacher => { %>
+                            <tr>
+                                <td><%= teacher.teacher_id %></td>
+                                <td><%= teacher.staff_id %></td>
+                                <td><%= teacher.fname %> <%= teacher.lname %></td>
+                                <td><%= teacher.email %></td>
+                                <td><%= teacher.department %></td>
+                            </tr>
+                            <% }); %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="form-section" id="courses-section">
+                <!-- Courses section remains unchanged -->
+                <h2>Course Management</h2>
+                <div class="mb-4">
+                    <h4>Add New Course</h4>
+                    <form action="/admin/add-course" method="post" class="mb-4">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="courseCode" class="form-label">Course Code</label>
+                                <input type="text" class="form-control" id="courseCode" name="courseCode" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="courseName" class="form-label">Course Name</label>
+                                <input type="text" class="form-control" id="courseName" name="courseName" required>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="teacherId" class="form-label">Teacher</label>
+                                <select class="form-control" id="teacherId" name="teacherId" required>
+                                    <% teachers.forEach(teacher => { %>
+                                      <option value="<%= teacher.id %>"><%= teacher.fname %> <%= teacher.lname %></option>
+                                    <% }); %>
+                                  </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="credits" class="form-label">Credits</label>
+                                <input type="number" class="form-control" id="credits" name="credits" required>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Description</label>
+                            <textarea class="form-control" id="description" name="description" rows="3" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Add Course</button>
+                    </form>
+                </div>
+                <div class="mb-4">
+                    <h4>Current Courses</h4>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Code</th>
+                                <th>Name</th>
+                                <th>Teacher</th>
+                                <th>Credits</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% courses.forEach(course => { %>
+                            <tr>
+                                <td><%= course.course_code %></td>
+                                <td><%= course.course_name %></td>
+                                <td><%= course.teacher_fname %> <%= course.teacher_lname %></td>
+                                <td><%= course.credits %></td>
+                                <td><%= course.description %></td>
+                            </tr>
+                            <% }); %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.querySelectorAll('.nav-link').forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const section = e.target.dataset.section;
+            document.querySelectorAll('.nav-link').forEach(nav => nav.classList.remove('active'));
+            e.target.classList.add('active');
+            document.querySelectorAll('.form-section').forEach(sec => sec.classList.remove('active'));
+            document.getElementById(`${section}-section`).classList.add('active');
+        });
+    });
+</script>
+<%- include('partials/footer') %>

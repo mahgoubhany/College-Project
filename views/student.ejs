@@ -1,0 +1,150 @@
+<%- include('partials/studentheader') %>
+<!-- <form action="/student" method="post"> -->
+<div class="container py-5">
+  <div class="card shadow fade-in mb-5">
+    <div class="card-body d-flex flex-column flex-md-row align-items-center justify-content-between">
+      <div>
+        <h3><i class="bi bi-person-circle me-2"></i>Student Profile</h3>
+        <p><strong>ID:</strong> <span id="student-id"><%= student.id %></span></p>
+        <p><strong>First Name:</strong> <span id="student-firstname"><%= student.firstname %></span></p>
+        <p><strong>Last Name:</strong> <span id="student-lastname"><%= student.lastname %></span></p>
+        <p><strong>Email:</strong> <span id="student-email"><%= student.email %></span></p>
+      </div>
+      <button class="btn btn-outline-primary mt-3 mt-md-0" data-bs-toggle="modal" data-bs-target="#editStudentModal">
+        <i class="bi bi-pencil-square"></i> Edit Profile
+      </button>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6 mb-4">
+      <div class="card shadow fade-in dashboard-card">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center" 
+             data-bs-toggle="collapse" data-bs-target="#course-section" aria-expanded="true">
+          <span><i class="bi bi-book me-2"></i>My Courses (<%= courses.length %>)</span>
+          <i class="bi bi-chevron-down"></i>
+        </div>
+        <div class="collapse show" id="course-section">
+          <div class="p-3">
+            <input type="text" id="course-search" class="form-control mb-3" placeholder="Search courses...">
+            <ul class="list-group" id="course-list">
+              <% courses.forEach(course => { %>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                  <%= course.name %> (Code: <%= course.code %>)
+                  <span class="badge bg-secondary"><%= course.teacher %></span>
+                </li>
+              <% }); %>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6 mb-4">
+      <div class="card shadow fade-in dashboard-card">
+        <div class="card-header bg-success text-white d-flex justify-content-between align-items-center" 
+             data-bs-toggle="collapse" data-bs-target="#teachers-section" aria-expanded="true">
+          <span><i class="bi bi-people-fill me-2"></i>My Teachers (<%= teachers.length %>)</span>
+          <i class="bi bi-chevron-down"></i>
+        </div>
+        <div class="collapse show" id="teachers-section">
+          <div class="p-3">
+            <input type="text" id="teacher-search" class="form-control mb-3" placeholder="Search teachers...">
+            <ul class="list-group" id="teachers-list">
+              <% teachers.forEach(teacher => { %>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                  <%= teacher.name %>
+                  <span class="badge bg-primary"><%= teacher.courses_count %> courses</span>
+                </li>
+              <% }); %>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="editStudentModal" tabindex="-1" aria-labelledby="editStudentModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form id="editStudentForm">
+        <div class="modal-header">
+          <h5 class="modal-title" id="editStudentModalLabel"><i class="bi bi-pencil-square me-2"></i>Edit Student Info</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="edit-id" class="form-label">ID</label>
+            <input type="text" class="form-control" id="edit-id" value="<%= student.id %>" readonly>
+          </div>
+          <div class="mb-3">
+            <label for="edit-fname" class="form-label">First Name</label>
+            <input type="text" class="form-control" id="edit-fname" value="<%= student.firstname %>" required>
+          </div>
+          <div class="mb-3">
+            <label for="edit-lname" class="form-label">Last Name</label>
+            <input type="text" class="form-control" id="edit-lname" value="<%= student.lastname %>" required>
+          </div>
+          <div class="mb-3">
+            <label for="edit-email" class="form-label">Email</label>
+            <input type="email" class="form-control" id="edit-email" value="<%= student.email %>" required>
+          </div>
+          <div class="mb-3">
+            <label for="edit-password" class="form-label">Password</label>
+            <input type="password" class="form-control" id="edit-password" placeholder="Enter new password">
+            <small class="text-muted">Leave blank to keep current password</small>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary"><i class="bi bi-save2 me-1"></i>Save Changes</button>
+        </div>
+      <!-- </form> -->
+    </div>
+  </div>
+</div>
+</form>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+  document.getElementById('course-search').addEventListener('input', function() {
+    const query = this.value.toLowerCase();
+    const courses = document.querySelectorAll('#course-list li');
+    courses.forEach(course => {
+      course.style.display = course.textContent.toLowerCase().includes(query) ? '' : 'none';
+    });
+  });
+  document.getElementById('teacher-search').addEventListener('input', function() {
+    const query = this.value.toLowerCase();
+    const teachers = document.querySelectorAll('#teachers-list li');
+    teachers.forEach(teacher => {
+      teacher.style.display = teacher.textContent.toLowerCase().includes(query) ? '' : 'none';
+    });
+  });
+  document.getElementById('editStudentForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const studentId = '<%= student.id %>';
+    const fname = document.getElementById('edit-fname').value;
+    const lname = document.getElementById('edit-lname').value;
+    const email = document.getElementById('edit-email').value;
+    const password = document.getElementById('edit-password').value;  
+    axios.post(`/student/${studentId}/update`, {
+      fname,
+      lname,
+      email,
+      password: password || undefined 
+    })
+    .then(response => {
+      if (response.data.success) {
+        document.getElementById('student-firstname').textContent = fname;
+        document.getElementById('student-lastname').textContent = lname;
+        document.getElementById('student-email').textContent = email;
+        const modal = bootstrap.Modal.getInstance(document.getElementById('editStudentModal'));
+        modal.hide();
+        alert('Profile updated successfully!');
+      }
+    })
+    .catch(error => {
+      console.error('Error updating student:', error);
+      alert('Error updating profile. Please try again.');
+    });
+  });
+</script>
+<%- include('partials/footer') %>
